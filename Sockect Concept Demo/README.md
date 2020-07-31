@@ -285,3 +285,8 @@
                     </script>
                     <body></body>
                 </html>
+
+## D.2. Leaving a room
+- To leave a room, you **need to call the leave function just as you called the join function on the socket**.
+- For example − To leave room 'room-1',
+- `socket.leave("room-"+roomno); `               
