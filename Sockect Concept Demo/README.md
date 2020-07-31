@@ -69,3 +69,58 @@
 -           socket.on('clientEvent', function(data) {
                 console.log(data);
             });
+
+## Socket.IO - Broadcasting
+1. Broadcasting means **sending a message to all connected clients**. 
+2. Broadcasting can be d**one at multiple levels**. 
+3. We can send the 
+    - **message to all the connected clients**, 
+    - **to clients on a namespace** and 
+    - **clients in a particular room**. 
+4. To **broadcast an event to all the clients**, we can use the `io.sockets.emit` method.
+5. **Note** 
+    − This will `emit the event to ALL the connected clients` (**even the socket that might have fired this event**).            
+
+### In this example, we will broadcast the number of connected clients to all the users. Update the app.js file to incorporate the following.
+
+### Server side
+-                       var app = require('express')();
+                        var http = require('http').Server(app);
+                        var io = require('socket.io')(http);
+
+                        app.get('/', function(req, res) {
+                            res.sendfile('index.html');
+                        });
+
+                        var clients = 0;
+                        io.on('connection', function(socket) {
+                        clients++;
+                        io.sockets.emit('broadcast',{ description: clients + ' clients connected!'});
+                            socket.on('disconnect', function () {
+                                clients--;
+                                io.sockets.emit('broadcast',{ description: clients + ' client connected!'});
+                            });
+                        });
+
+                        http.listen(3000, function() {
+                            console.log('listening on localhost:3000');
+                        });
+
+
+### client side
+- On the client side, we just need to handle the broadcast event
+-                       <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Hello world</title>
+                        </head>
+                        <script src = "/socket.io/socket.io.js"></script>
+                        <script>
+                            var socket = io();
+                            socket.on('broadcast',function(data) {
+                                document.body.innerHTML = '';
+                                document.write(data.description);
+                            });
+                        </script>
+                        <body>Hello world</body>
+                        </html>

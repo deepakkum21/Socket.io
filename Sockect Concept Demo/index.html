@@ -11,7 +11,7 @@
 
     <!-- clients can establish connections when required -->
     <script src="/socket.io/socket.io.js"></script>
-    <script>
+    <!-- <script>
         var socket = io();
         socket.on('message', function(data){document.write(data)});
 
@@ -21,6 +21,15 @@
         // can also emit events from the client. 
         // To emit an event from your client, use the emit function on the socket object.
         socket.emit('clientEvent', 'Sent an event from the client!');
+    </script> -->
+
+    <!-- braodcast event handle -->
+    <script>
+        var socket = io();
+        socket.on('broadcast', function (data) {
+            document.body.innerHTML = '';
+            document.write(data.description);
+        });
     </script>
 </head>
 
