@@ -227,3 +227,61 @@
                     </script>
                     <body></body>
                 </html>
+
+
+# D. Socket.IO - Rooms                
+1. **Within each namespace**, you can also define **arbitrary channels** that sockets can join and leave. 
+2. These **channels are called rooms**. Rooms are used to further-separate concerns.
+3. Rooms **also share the same socket connection like namespaces**.
+4. One thing to keep in mind while `using rooms is that they can only be joined on the server side`.
+
+## D.1. Joining Rooms
+- You can **`call the join method` on the socket to subscribe the socket to a given channel/room**. 
+- For example, let us create rooms called `'room-<room-number>'` and join some clients. 
+- **As soon as this room is full, create another room and join clients** there.
+- Note − We are **currently doing this on the default namespace, i.e. '/'**. You can also implement this in custom namespaces in the same fashion.
+- **To join a room you need to `provide the room name as the argument to your join function call`**
+
+- **server side app.js
+-               var app = require('express')();
+                var http = require('http').Server(app);
+                var io = require('socket.io')(http);
+
+                app.get('/', function(req, res) {
+                    res.sendfile('index.html');
+                });
+
+                var roomno = 1;
+                io.on('connection', function(socket) {
+                
+                    //Increase roomno if 2 clients are present in a room.
+                    if(io.nsps['/'].adapter.rooms["room-"+roomno] && io.nsps['/'].adapter.rooms["room-"+roomno].length > 1) {
+                        roomno++;
+                    }
+                    socket.join("room-"+roomno);
+
+                    //Send this event to everyone in the room.
+                    io.sockets.in("room-"+roomno).emit('connectToRoom', "You are in room no. "+roomno);
+                })
+
+                http.listen(3000, function() {
+                    console.log('listening on localhost:3000');
+                });
+
+- **client side index.html**
+-               <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Hello world</title>
+                    </head>
+                    <script src = "/socket.io/socket.io.js"></script>
+                    
+                    <script>
+                        var socket = io();
+                        socket.on('connectToRoom',function(data) {
+                            document.body.innerHTML = '';
+                            document.write(data);
+                        });
+                    </script>
+                    <body></body>
+                </html>

@@ -53,24 +53,37 @@ app.get('/', function (req, res) {
 //     });
 // });
 
-// broadcast message to the all client except the one who caused
-var clients = 0;
-io.on('connection', function(socket) {
-   clients++;
-   socket.emit('newclientconnect',{ description: 'Hey, welcome!'});
-   socket.broadcast.emit('newclientconnect',{ description: clients + ' clients connected!'})
-   socket.on('disconnect', function () {
-      clients--;
-      socket.broadcast.emit('newclientconnect',{ description: clients + ' clients connected!'})
-   });
-});
+// // broadcast message to the all client except the one who caused
+// var clients = 0;
+// io.on('connection', function(socket) {
+//    clients++;
+//    socket.emit('newclientconnect',{ description: 'Hey, welcome!'});
+//    socket.broadcast.emit('newclientconnect',{ description: clients + ' clients connected!'})
+//    socket.on('disconnect', function () {
+//       clients--;
+//       socket.broadcast.emit('newclientconnect',{ description: clients + ' clients connected!'})
+//    });
+// });
 
-// custom namespace
-var nsp = io.of('/my-namespace');
-nsp.on('connection', function(socket) {
-   console.log('someone connected');
-   nsp.emit('hi', 'Hello everyone!');
-});
+// // custom namespace
+// var nsp = io.of('/my-namespace');
+// nsp.on('connection', function(socket) {
+//    console.log('someone connected');
+//    nsp.emit('hi', 'Hello everyone!');
+// });
+
+
+// Rooms join
+var roomno = 1;
+io.on('connection', function (socket) {
+
+    //Increase roomno 2 clients are present in a room.
+    if (io.nsps['/'].adapter.rooms["room-" + roomno] && io.nsps['/'].adapter.rooms["room-" + roomno].length > 1) roomno++;
+    socket.join("room-" + roomno);
+
+    //Send this event to everyone in the room.
+    io.sockets.in("room-" + roomno).emit('connectToRoom', "You are in room no. " + roomno);
+})
 
 
 http.listen(3000, function () {

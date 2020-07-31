@@ -33,18 +33,27 @@
     </script> -->
 
     <!-- broadcast message to the all client except the one who caused -->
-    <script>
+    <!-- <script>
         var socket = io();
         socket.on('newclientconnect', function (data) {
             document.body.innerHTML = '';
             document.write(data.description);
         });
-    </script>
+    </script> -->
 
     <!-- custom namespace -->
-    <script>
+    <!-- <script>
         var socket = io('/my-namespace');
         socket.on('hi', function (data) {
+            document.body.innerHTML = '';
+            document.write(data);
+        });
+    </script> -->
+
+    <!-- rooms -->
+    <script>
+        var socket = io();
+        socket.on('connectToRoom', function (data) {
             document.body.innerHTML = '';
             document.write(data);
         });
