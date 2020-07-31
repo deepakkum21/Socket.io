@@ -24,9 +24,18 @@
     </script> -->
 
     <!-- braodcast event handle -->
-    <script>
+    <!-- <script>
         var socket = io();
         socket.on('broadcast', function (data) {
+            document.body.innerHTML = '';
+            document.write(data.description);
+        });
+    </script> -->
+
+    <!-- broadcast message to the all client except the one who caused -->
+    <script>
+        var socket = io();
+        socket.on('newclientconnect', function (data) {
             document.body.innerHTML = '';
             document.write(data.description);
         });

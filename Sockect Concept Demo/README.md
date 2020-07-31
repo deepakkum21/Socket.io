@@ -122,5 +122,53 @@
                                 document.write(data.description);
                             });
                         </script>
-                        <body>Hello world</body>
+                            <body>
+                                Hello world
+                            </body>
                         </html>
+
+### Sending a broadcast event to other client not to the client which caused the event
+- The above example was to send an event to everyone. 
+- Now, **if we want to send an event to everyone, but the client that caused it** (in the previous example, it was caused by new clients on connecting), 
+    - we can use the `socket.broadcast.emit.`
+### example2: Let us send the new user a welcome message and update the other clients about him/her joining. So in your app.js file, on connection of client send him a welcome message and broadcast connected client number to all others.
+- **server side app.js**
+-                   var app = require('express')();
+                    var http = require('http').Server(app);
+                    var io = require('socket.io')(http);
+
+                    app.get('/', function(req, res) {
+                        res.sendfile('index.html');
+                    });
+
+                    var clients = 0;
+                    io.on('connection', function(socket) {
+                        clients++;
+                        socket.emit('newclientconnect',{ description: 'Hey, welcome!'});
+                        socket.broadcast.emit('newclientconnect',{ description: clients + ' clients connected!'})
+                        socket.on('disconnect', function () {
+                            clients--;
+                            socket.broadcast.emit('newclientconnect',{ description: clients + ' clients connected!'})
+                        });
+                    });
+
+                    http.listen(3000, function() {
+                        console.log('listening on localhost:3000');
+                    });
+
+- **Client side index.html**
+-               <!DOCTYPE html>
+                <html>
+                    <head>
+                        <title>Hello world</title>
+                    </head>
+                    <script src = "/socket.io/socket.io.js"></script>
+                    <script>
+                        var socket = io();
+                        socket.on('newclientconnect',function(data) {
+                            document.body.innerHTML = '';
+                            document.write(data.description);
+                        });
+                    </script>
+                    <body>Hello world</body>
+                </html>

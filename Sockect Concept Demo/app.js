@@ -9,19 +9,19 @@ app.get('/', function (req, res) {
     res.sendfile('index.html');
 });
 
-var clients = 0;
+// // to broadcast the events to all clients also whi caused it
+// var clients = 0;
+// io.on('connection', function(socket) {
+//     clients++;
 
-io.on('connection', function(socket) {
-    clients++;
+//     // broadcast event
+//     io.sockets.emit('broadcast',{ description: clients + ' clients connected!'});
 
-    // broadcast event
-    io.sockets.emit('broadcast',{ description: clients + ' clients connected!'});
-
-    socket.on('disconnect', function () {
-       clients--;
-       io.sockets.emit('broadcast',{ description: clients + ' clients connected!'});
-    });
- });
+//     socket.on('disconnect', function () {
+//        clients--;
+//        io.sockets.emit('broadcast',{ description: clients + ' clients connected!'});
+//     });
+//  });
 
 
 // //Whenever someone connects this gets executed
@@ -52,6 +52,18 @@ io.on('connection', function(socket) {
 //         console.log('A user disconnected');
 //     });
 // });
+
+// broadcast message to the all client except the one who caused
+var clients = 0;
+io.on('connection', function(socket) {
+   clients++;
+   socket.emit('newclientconnect',{ description: 'Hey, welcome!'});
+   socket.broadcast.emit('newclientconnect',{ description: clients + ' clients connected!'})
+   socket.on('disconnect', function () {
+      clients--;
+      socket.broadcast.emit('newclientconnect',{ description: clients + ' clients connected!'})
+   });
+});
 
 
 http.listen(3000, function () {
