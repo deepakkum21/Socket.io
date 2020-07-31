@@ -19,7 +19,7 @@
 -  We now have to **include the client script and initialize the socket object there**, so that clients can establish connections when required. The script is served by our io server at '/socket.io/socket.io.js'.
 
 
-# Socket.IO - Event Handling
+# A. Socket.IO - Event Handling
 ## Sockets work based on events. 
  - There are some reserved events, which can be accessed using the socket object on 
  
@@ -70,7 +70,7 @@
                 console.log(data);
             });
 
-## Socket.IO - Broadcasting
+# B. Socket.IO - Broadcasting
 1. Broadcasting means **sending a message to all connected clients**. 
 2. Broadcasting can be d**one at multiple levels**. 
 3. We can send the 
@@ -171,4 +171,59 @@
                         });
                     </script>
                     <body>Hello world</body>
+                </html>
+
+
+
+# C. Socket.IO - Namespaces
+1. `Socket.IO allows you to “namespace”` your sockets, which **essentially means assigning different endpoints or paths**. 
+2. This is a **useful feature to minimize the number of resources** (TCP connections) and at the same time separate concerns within your application by introducing separation between communication channels
+3. **Multiple namespaces actually share the same WebSockets connection** thus saving us socket ports on the server.
+4. `Namespaces are created on the server side`. However, they are joined by clients by sending a request to the server.
+
+## C.1. Default Namespaces
+- The `root namespace '/' is the default namespace`, which is **joined by clients if a namespace is not specified by the client while connecting to the server**.
+- All connections to the server using the socket-object client side are made to the default namespace.
+- `var socket = io();`
+- This **will connect the client to the default namespace**.
+- All events on this namespace connection will be handled by the io object on the server.
+
+## C.2. Custom Namespaces
+- To set `up a custom namespace, we can call the ‘of’ function on the server side` −
+- **server side**
+-               var app = require('express')();
+                var http = require('http').Server(app);
+                var io = require('socket.io')(http);
+
+                app.get('/', function(req, res) {
+                    res.sendfile('index.html');
+                });
+
+                var nsp = io.of('/my-namespace');
+                nsp.on('connection', function(socket) {
+                    console.log('someone connected');
+                    nsp.emit('hi', 'Hello everyone!');
+                });
+
+                http.listen(3000, function() {
+                    console.log('listening on localhost:3000');
+                });
+
+- **client side**
+- Now, to connect a client to this namespace, you **need to provide the namespace as an argument to the `io constructor call` to create a connection** and a socket object on client side.                
+-               <!DOCTYPE html>
+                <html>
+                    <head>
+                        <title>Hello world</title>
+                    </head>
+                    <script src = "/socket.io/socket.io.js"></script>
+                    
+                    <script>
+                        var socket = io('/my-namespace');
+                        socket.on('hi',function(data) {
+                            document.body.innerHTML = '';
+                            document.write(data);
+                        });
+                    </script>
+                    <body></body>
                 </html>

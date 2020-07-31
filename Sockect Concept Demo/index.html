@@ -40,6 +40,15 @@
             document.write(data.description);
         });
     </script>
+
+    <!-- custom namespace -->
+    <script>
+        var socket = io('/my-namespace');
+        socket.on('hi', function (data) {
+            document.body.innerHTML = '';
+            document.write(data);
+        });
+    </script>
 </head>
 
 <body>
