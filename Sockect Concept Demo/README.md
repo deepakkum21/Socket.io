@@ -17,3 +17,21 @@
 ## 3. The io.on event handler handles connection, disconnection, etc., events in it, using the socket object.
 - We have set up our server to log messages on connections and disconnections.
 -  We now have to **include the client script and initialize the socket object there**, so that clients can establish connections when required. The script is served by our io server at '/socket.io/socket.io.js'.
+
+# Sockets work based on events. 
+ 1. There are some reserved events, which can be accessed using the socket object on 
+ 
+## the server side socket events are −
+- `Connect`
+- `Message`
+- `Disconnect`
+- `Reconnect`
+- `Ping`
+- `Join` and
+- `Leave`
+
+## The client-side socket object also provides us with some reserved events, which are −
+- `Connect`
+- `Connect_error`
+- `Connect_timeout`
+- `Reconnect` etc
