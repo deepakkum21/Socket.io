@@ -28,6 +28,11 @@ io.on('connection', function (socket) {
     }, 8000);
 
 
+    // To handle client events, use the on function on the socket object on your server.
+    socket.on('clientEvent', function (data) {
+        console.log(data);
+    });
+
     //Whenever someone disconnects this piece of code executed
     socket.on('disconnect', function () {
         console.log('A user disconnected');

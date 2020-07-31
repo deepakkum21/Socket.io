@@ -15,8 +15,12 @@
         var socket = io();
         socket.on('message', function(data){document.write(data)});
 
-        // Custom event
+        // Custom event from server
         socket.on('testerCustomEvent', function(data){document.write(data.description)});
+
+        // can also emit events from the client. 
+        // To emit an event from your client, use the emit function on the socket object.
+        socket.emit('clientEvent', 'Sent an event from the client!');
     </script>
 </head>
 
