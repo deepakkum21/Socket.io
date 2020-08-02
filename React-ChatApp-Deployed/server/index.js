@@ -67,11 +67,19 @@ io.on('connect', (socket) => {
 
         io.to(user.room).emit('message', { user: user.name, text: message });
 
+        io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+
         callback();
     });
 
     socket.on('disconnect', () => {
         console.log('Sad to see a client disconnected. Hope to see them back soon!!!!!!!!');
+        const user = removeUser(socket.id);
+
+        if(user) {
+          io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
+          io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+        }
     });
 });
 
