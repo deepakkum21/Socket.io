@@ -16,7 +16,7 @@ io.on('connection', (socket) => {
     console.log('Just now a new client connected!!!!');
 
     socket.on('disconnect', () => {
-        console.log('Sad to see a client disconnected. Hope to see them back soon!!!!!!!!');
+        console.log('Sad to see a client disconnected. Hope to see them back soon!!!!!!!!'); 
     })
 })
 
