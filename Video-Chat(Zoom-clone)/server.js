@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
-const server  = require('http').Server(app);
+const server = require('http').Server(app);
 const { v4: uuidv4 } = require('uuid');
 const io = require('socket.io')(server);
 
 const { ExpressPeerServer } = require('peer');
 const peerServer = ExpressPeerServer(server, {
-  debug: true
+    debug: true
 });
 
 const PORT = process.env.PORT || 3000;
@@ -32,14 +32,24 @@ app.get('/:room', (req, res) => {
 
 io.on('connection', socket => {
     socket.on('join-room', (roomID, userId) => {
-        console.log('Joined the room',roomID);
+        console.log('Joined the room', roomID);
         socket.join(roomID);
 
         // after joining the room broadcast the message to all expect who joins
         socket.to(roomID).broadcast.emit('user-connected', userId);
-    })
-})
 
-server.listen(PORT, () => {    
+        // messages
+        socket.on('message', (message) => {
+            //send message to the same room
+            io.to(roomID).emit('createMessage', message)
+        });
+
+        socket.on('disconnect', () => {
+            socket.to(roomID).broadcast.emit('user-disconnected', userId)
+        })
+    });
+});
+
+server.listen(PORT, () => {
     console.log(`The server is running on port ${PORT}`);
 });
