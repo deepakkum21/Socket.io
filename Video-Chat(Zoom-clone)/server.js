@@ -7,6 +7,9 @@ const PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
 
+// for making the use of static files wahich are in public folder
+app.use(express.static('public'));
+
 app.get('/', (req, res) => {
     //res.status(200).send("<h1>Hello World</h1>");
     // res.render('room');
