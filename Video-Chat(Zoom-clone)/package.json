@@ -1,0 +1,12 @@
+{
+  "name": "video-chat-zoom-clone",
+  "version": "1.0.0",
+  "description": "A zoom clone video chat app using nodejs socketio uid peer pperjs ejs express",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Deepsk kumar",
+  "license": "ISC"
+}
