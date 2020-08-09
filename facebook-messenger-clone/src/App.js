@@ -5,6 +5,8 @@ import { InputLabel, Input } from '@material-ui/core';
 import Message from './Message';
 import './App.css';
 import db from './firebase';
+import firebase from 'firebase';
+import FlipMove from 'react-flip-move';
 
 function App() {
 
@@ -20,11 +22,13 @@ function App() {
 
 
   useEffect(() => {
-    db.collection('messages').onSnapshot(snapshot => {
-      setMessages(snapshot.docs.map(doc => 
-        doc.data()
-      ))
-    })
+    db.collection('messages')
+      .orderBy('timestamp', 'desc')
+      .onSnapshot(snapshot => {
+        setMessages(snapshot.docs.map(doc =>
+          ({ id: doc.id, message: doc.data() })
+        ))
+      })
   }, [])
 
   const sendMessages = (event) => {
@@ -32,25 +36,37 @@ function App() {
     // when ever the eneter button is pressed for a form as for m tend sto submit and refreshes the screen
     event.preventDefault();
 
-    setMessages([...messages, { username: username, message : input }]);
+    // adding to db
+    db.collection('messages').add({
+      username: username,
+      message: input,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+
+    setMessages([...messages, { username: username, message: input }]);
     setInput('');
   }
 
   return (
     <div className="App">
-      <FormControl>
-        <InputLabel >Enter your message here ....</InputLabel>
-        <Input value={input} onChange={event => setInput(event.target.value)} />
-        <Button disabled={!input} variant="contained" color="primary" type='submit' onClick={sendMessages}>Send Message</Button>
-      </FormControl>
+      <form className="app__form">
+        <FormControl >
+          <InputLabel >Enter your message here ....</InputLabel>
+          <Input value={input} onChange={event => setInput(event.target.value)} />
+          <Button disabled={!input} variant="contained" color="primary" type="submit" onClick={sendMessages}>Send Message</Button>
+        </FormControl>
+      </form>
       {/* <form>
         <input value={input} onChange={event => setInput(event.target.value)} />
         <Button disabled={!input} variant="contained" color="primary" type='submit' onClick={sendMessages}>Send Message</Button>
       </form> */}
-      {messages.map((message, index) =>
-        <Message key={index} username={username} message={message}></Message>
-        // <p key={index}>{message}</p>
-      )}
+
+      <FlipMove>
+        {messages.map(({ message, id }) =>
+          <Message key={id} username={username} message={message}></Message>
+          // <p key={index}>{message}</p>
+        )}
+      </FlipMove>
     </div>
   );
 }
