@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
-import { InputLabel, Input } from '@material-ui/core';
+import { Input } from '@material-ui/core';
 import Message from './Message';
 import './App.css';
 import db from './firebase';
@@ -51,6 +50,7 @@ function App() {
 
   return (
     <div className="App">
+      <img src="https://facebookbrand.com/wp-content/uploads/2018/09/Header-e1538151782912.png?w=100&h=100" alt="facebook messenger logo"></img>
       <form className="app__form">
         <FormControl className="app__formControl">
           {/* <InputLabel >Enter your message here ....</InputLabel> */}
