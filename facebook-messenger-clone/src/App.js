@@ -24,7 +24,7 @@ function App() {
       <h1>App</h1>
       <form>
         <input value={input} onChange={event => setInput(event.target.value)} />
-        <Button variant="contained" color="primary" type='submit' onClick={sendMessages}>Send Message</Button>
+        <Button disabled={!input} variant="contained" color="primary" type='submit' onClick={sendMessages}>Send Message</Button>
       </form>
       {messages.map((message, index) =>
         <p key={index}>{message}</p>
